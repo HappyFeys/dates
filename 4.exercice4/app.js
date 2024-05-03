@@ -4,10 +4,7 @@ const date = document.querySelector('#date')
 const year = document.querySelector('#year')
 const displaySecond = document.querySelector('span')
 
-setInterval(()=>{
-    display()
-    displayFullDate()
-},1000)
+
 
 function display() {
     let thisHour = new Date()
@@ -19,7 +16,7 @@ function display() {
     let seconde = thisHour.getSeconds()
     displayHour.innerText = `${hour}:${minute}:`
     seconde<10 ?  seconde = '0'+seconde : seconde
-    displaySecond.innerText = seconde 
+    displaySecond.innerText = seconde
 }
 
 function displayFullDate() {
@@ -52,24 +49,29 @@ function displayFullDate() {
     let annee = thisHour.getFullYear()
     year.innerText = annee
 
-    let displayDate = thisHour.toLocaleDateString('fr-FR',{day: 'numeric', month:"short", hour12:false})
+    let displayDate = thisHour.toLocaleDateString('fr-FR',{day: 'numeric', month:"short"})
     date.innerText = displayDate
 }
 
 const displayTime = document.querySelector("#displayTime")
 
-displayTime.addEventListener('click',()=>{
-    setInterval(()=> {
-        let thisHour = new Date()
-        let amPm;
-    let hour = thisHour.getHours()
-    hour>12? amPm='PM': amPm='AM'
-    hour = hour % 12;
-    hour = hour ? hour : 12;
+let isClicked = false; //Je définis un boolean qui sera de base sur faux
 
-    let minute = thisHour.getMinutes()
-    minute<10? minute = '0'+minute : minute
-    displayHour.innerText = `${hour}:${minute}:`
-    displaySecond.innerText = amPm
-    },1000)
-})
+displayTime.addEventListener('click', () => {
+    isClicked = !isClicked; // Mon addEventListener va me toggle le boolean
+});
+
+setInterval(() => { //Ensuite, je définis un interval qui va se refresh toutes les secondes et qui va switch entre le format AM/PM en fonction de l'état du boolean
+    if (isClicked) {
+        let thisHour = new Date();
+        console.log(thisHour.toLocaleString("en-US", {hour: '2-digit', minute:'2-digit',hour12:true}));
+        displayHour.innerText = thisHour.toLocaleString("en-US", {hour: '2-digit', minute:'2-digit',hour12:true});
+        displaySecond.innerText = "";
+        displayFullDate();
+        console.log(isClicked);
+    } else {
+        display();
+        displayFullDate();
+        console.log(isClicked);
+    }
+}, 1000);
